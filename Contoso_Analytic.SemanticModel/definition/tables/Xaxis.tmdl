@@ -1,0 +1,26 @@
+table Xaxis
+	lineageTag: b701aadd-1724-47a0-90a5-d234511cefb8
+
+	measure 'Xaxis Value' = SELECTEDVALUE('Xaxis'[Xaxis])
+		formatString: 0
+		lineageTag: 854f0cb6-fd77-42d6-ab6a-190f75f787ed
+
+	column Xaxis
+		formatString: 0
+		lineageTag: 231a8de0-1daf-4f65-a01a-7e44765845ff
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition Xaxis = calculated
+		mode: import
+		source = GENERATESERIES(0, 500, 1)
+
+	annotation PBI_Id = 7ad4e5f017024d078897b43f3b66f5f5
+

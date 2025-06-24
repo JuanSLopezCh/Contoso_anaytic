@@ -1,0 +1,916 @@
+table *Measures
+	lineageTag: 1582d5fc-b59e-41b7-b7e8-0f4e5c8a7722
+
+	measure TotalSales = ```
+			SUM(sales[TotalPrice])
+			    
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Money
+		lineageTag: 2320e70b-1154-446b-80b9-b3b31a31bb9f
+
+	measure TotalCost = ```
+			SUM(sales[TotalCost])
+			    
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Money
+		lineageTag: 335dbdfb-85b4-40a2-aae4-0e4c55dfb87e
+
+	measure TotalRevenue = ```
+			SUM(sales[Revenue])
+			    
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Money
+		lineageTag: 0e9e0a2d-1e5d-4fa6-a3f1-cde4d9c86c5e
+
+	measure Profit = ```
+			DIVIDE([TotalRevenue], [TotalSales], 0)
+			    
+			```
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		displayFolder: Money
+		lineageTag: c62148f2-2cba-4efc-8ed8-5f71348a97d7
+
+	measure SalesPerCustomer = ```
+			DIVIDE([TotalSales], [TotalCustomerswithSales])
+			    
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Money
+		lineageTag: 30440d2c-c374-4b03-a917-c6cccc1407e5
+
+	measure 'Sales YTD' = ```
+			var lastMonthAvailable = MAX('Calendar'[Month_year_Index])
+			var LastYearAvailable = MAX('Calendar'[Year])
+			VAR Result = 
+			    CALCULATE(
+			        [TotalSales],
+			        REMOVEFILTERS('Calendar'),
+			        'Calendar'[Month_year_Index]<=lastMonthAvailable,
+			        'Calendar'[Year] <= LastYearAvailable
+			    )
+			RETURN
+			Result
+			    
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Money
+		lineageTag: ca385dd6-12b4-4a6f-8ea9-8e46903d5206
+
+	measure 'TotalSales Last Period' = ```
+			VAR TotSlsLastWeek = CALCULATE([TotalSales], 'Calendar'[Weeks_Since] = 1)
+			VAR TotSlsLastMonth = CALCULATE([TotalSales], 'Calendar'[Months_Since] = 1)
+			RETURN
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), TotSlsLastMonth,
+			HASONEFILTER('Calendar'[Weeks_Since]), TotSlsLastWeek)
+			    
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Money
+		lineageTag: 49dd4a87-68ca-49b1-882c-f047e3a3ef58
+
+	measure 'TotalSales vs LastPeriod' = ```
+			DIVIDE(([TotalSales]-[TotalSales Last Period]),[TotalSales Last Period],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Money
+		lineageTag: 25461c0f-eb4b-4dad-8d67-fb5a974805ed
+
+	measure 'Customer Orders' = ```
+			
+			VAR customer_ = SELECTEDVALUE(sales[CustomerKey])
+			RETURN 
+			CALCULATE(
+			    [TotalOrders], 
+			    REMOVEFILTERS(sales[OrderKey]),
+			    REMOVEFILTERS(sales[OrderDate]),
+			    REMOVEFILTERS(sales[Type]),
+			    REMOVEFILTERS(sales[OrderStatus]),
+			    sales[CustomerKey] = customer_
+			)
+			```
+		formatString: 0
+		displayFolder: Customers\Customer Info
+		lineageTag: 3a1baf2d-0692-45ce-a75e-892fc08962f1
+
+	measure 'First Order' = ```
+			
+			VAR customer_ = SELECTEDVALUE(sales[CustomerKey])
+			RETURN 
+			CALCULATE(
+			    min(sales[OrderDate]), 
+			    REMOVEFILTERS(sales[OrderKey]),
+			    REMOVEFILTERS(sales[OrderDate]),
+			    REMOVEFILTERS(sales[Type]),
+			    REMOVEFILTERS(sales[OrderStatus]),
+			    sales[CustomerKey] = customer_
+			)
+			```
+		formatString: Short Date
+		displayFolder: Customers\Customer Info
+		lineageTag: 930a43bb-dc14-4681-a25d-ab6ca04b4c16
+
+	measure 'Customer Name' =
+			
+			CALCULATE(MIN(customer[Name]), customer[CustomerKey] = SELECTEDVALUE(sales[CustomerKey]))
+		displayFolder: Customers\Customer Info
+		lineageTag: be08e631-0083-4f11-8b03-eb68b048b963
+
+	measure 'Customer Gender' =
+			
+			CALCULATE(MIN(customer[Gender]), customer[CustomerKey] = SELECTEDVALUE(sales[CustomerKey]))
+		displayFolder: Customers\Customer Info
+		lineageTag: 50a97642-ffba-4e04-afc5-04de27cbc640
+
+	measure 'Customer Occupation' = ```
+			CALCULATE(MIN(customer[Occupation]), customer[CustomerKey] = SELECTEDVALUE(sales[CustomerKey]))
+				
+				 
+			```
+		displayFolder: Customers\Customer Info
+		lineageTag: 071f5b51-3448-442e-a9b5-05e3497cd874
+
+	measure 'Customer StreetAddress' = ```
+			CALCULATE(MIN(customer[StreetAddress]), customer[CustomerKey] = SELECTEDVALUE(sales[CustomerKey]))
+				 
+				  
+			```
+		displayFolder: Customers\Customer Info
+		lineageTag: 08e3d90d-4026-4907-afa5-f87eabfb787d
+
+	measure 'Customer Company' = ```
+			CALCULATE(MIN(customer[Company]), customer[CustomerKey] = SELECTEDVALUE(sales[CustomerKey]))
+			
+			
+			```
+		displayFolder: Customers\Customer Info
+		lineageTag: af7d0e29-28b3-4e57-bdd8-7623ef3c3995
+
+	measure 'Local Orders' = ```
+			
+			VAR customer_ = SELECTEDVALUE(sales[CustomerKey])
+			RETURN 
+			CALCULATE(
+			    [TotalOrders], 
+			    REMOVEFILTERS(sales[OrderKey]),
+			    REMOVEFILTERS(sales[OrderDate]),
+			    REMOVEFILTERS(sales[Type]),
+			    REMOVEFILTERS(sales[OrderStatus]),
+			    sales[CustomerKey] = customer_,
+			    sales[Type] = "Local"
+			)
+			
+			```
+		formatString: 0
+		displayFolder: Customers\Customer Info
+		lineageTag: 928106b1-403a-419b-b974-982e62713bc8
+
+	measure 'Online Orders' = ```
+			
+			VAR customer_ = SELECTEDVALUE(sales[CustomerKey])
+			RETURN 
+			CALCULATE(
+			    [TotalOrders], 
+			    REMOVEFILTERS(sales[OrderKey]),
+			    REMOVEFILTERS(sales[OrderDate]),
+			    REMOVEFILTERS(sales[Type]),
+			    REMOVEFILTERS(sales[OrderStatus]),
+			    sales[CustomerKey] = customer_,
+			    sales[Type] = "Online"
+			)
+			```
+		formatString: 0
+		displayFolder: Customers\Customer Info
+		lineageTag: ae641142-7387-4690-9ee9-572ef6ac9ad9
+
+	measure 'Order Country' = ```
+			
+			CALCULATE(
+			    MIN(customer[CountryFull]),
+			    customer[CustomerKey] = SELECTEDVALUE(sales[CustomerKey]))
+			    
+			```
+		displayFolder: Customers\Customer Info
+		lineageTag: 09ff8838-ff64-4983-aff1-808ba465ebe1
+
+	measure Recency = ```
+			
+			VAR MaxDate = MAX('Calendar'[Date])
+			RETURN
+			DATEDIFF(
+			    MAX(sales[OrderDate]),
+			    MaxDate,
+			    DAY
+			)
+			    
+			```
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: 69e6abbd-d3f1-47bb-9244-a0f461ba4de9
+
+	measure Frequency = ```
+			
+			CALCULATE(DISTINCTCOUNT(sales[OrderKey]), ALL(sales[CustomerKey]))
+			    
+			```
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: dc79024f-16dd-47b7-afec-91ee39e0bc78
+
+	measure NewCustomers = ```
+			VAR StartDate = MIN('Calendar'[Date])
+			VAR EndDate = MAX('Calendar'[Date])
+			RETURN
+			CALCULATE(
+			    DISTINCTCOUNT(sales[CustomerKey]),
+			    FILTER(
+			        VALUES(sales[CustomerKey]),
+			        VAR FirstP = CALCULATE(
+			            MIN(sales[OrderDate]),
+			            REMOVEFILTERS('Calendar'),
+			            ALLEXCEPT(sales, sales[CustomerKey])
+			        )
+			        RETURN
+			            FirstP >= StartDate &&
+			            FirstP <= EndDate
+			    )
+			)
+			    
+			```
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: 8e931fa6-d311-4f9a-b96b-4c6d679f48e3
+
+	measure LostCustomers = ```
+			VAR LastDateLost = 
+			    CALCULATE(
+			        MAX('Calendar'[Date]),
+			        ALLSELECTED('Calendar')
+			    )
+			VAR CustomersWithLostDate =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(
+			            VALUES(sales[CustomerKey]),
+			            "@LostCustomerDate", [CustomersLastPDate]
+			        ),
+			        ALLEXCEPT(sales, customer)
+			    )
+			VAR LostCustomers = 
+			    FILTER(
+			        CustomersWithLostDate,
+			        [@LostCustomerDate] IN VALUES('Calendar'[Date])
+			    )
+			VAR Result = 
+			    COUNTROWS(LostCustomers)
+			
+			RETURN
+			Result
+			    
+			```
+		formatString: 0
+		displayFolder: Customers
+		lineageTag: df997480-8c47-450e-befc-69c409e027cf
+
+	measure CustomersLastPDate = ```
+			
+			VAR MaxDate=
+			    CALCULATE(
+			        MAX(sales[OrderDate]),
+			        ALLEXCEPT(
+			            sales,
+			            sales[CustomerKey],
+			            customer
+			        )
+			    )
+			VAR result =
+			    IF(
+			        NOT ISBLANK(MaxDate),
+			        EOMONTH(MaxDate, 3)
+			    )
+			RETURN
+			result
+			    
+			```
+		formatString: Short Date
+		displayFolder: Customers
+		lineageTag: b85d2184-682d-4103-8607-78ec6104ac2b
+
+	measure TotalCustomerswithSales = ```
+			DISTINCTCOUNT(sales[CustomerKey])
+			    
+			```
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: 7d34312b-43a3-43e5-8231-c20b534a10b8
+
+	measure CustomersWithNoSales = ```
+			COUNTROWS(
+			    Filter(
+			        ADDCOLUMNS(
+			            VALUES(customer[CustomerKey]), 
+			            "@Sales", [TotalSales]),
+			            ISBLANK([@Sales]) || [@Sales]=0
+			            )
+			)
+			    
+			```
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: bf86c23e-27cb-46d8-b9ba-76060e6c8fcf
+
+	measure 'Active Customers' = ```
+			CALCULATE(
+			    DISTINCTCOUNT(sales[CustomerKey]), FILTER(sales,[TotalOrders] > 0))
+			    
+			```
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: 2dd66102-e9b7-4425-acd9-40e834e3dea7
+
+	measure 'Unique Customers Last Period' = ```
+			
+			VAR LastWeek = CALCULATE([Active Customers], 'Calendar'[Weeks_Since] = 1)
+			VAR LastMonth = CALCULATE([Active Customers], 'Calendar'[Months_Since] = 1)
+			RETURN
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), LastMonth,
+			HASONEFILTER('Calendar'[Weeks_Since]), LastWeek)
+			    
+			```
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: e43d4443-ba03-42c7-82ac-e46de2011892
+
+	measure 'Unique Customers vs LastPeriod' = ```
+			DIVIDE(([Active Customers]-[Unique Customers Last Period]),[Unique Customers Last Period],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Customers
+		lineageTag: cbc32393-ed24-4ced-b2a6-4c69dcacd566
+
+	measure 'Total Customers' = ```
+			DISTINCTCOUNT(sales[CustomerKey])
+			    
+			```
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: 634a63fc-9976-4f23-b0c9-c87060a7345b
+
+	measure 'Inactive Customers' = ```
+			CALCULATE(
+			    DISTINCTCOUNT(sales[CustomerKey]), FILTER(sales,[TotalOrders] <= 0))
+			    
+			```
+		formatString: 0
+		displayFolder: Customers
+		lineageTag: 27ea2835-40ea-4165-b2b8-38457771f871
+
+	measure TotalOrders = ```
+			distinctCount(sales[OrderKey])
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 24e108f6-ef9b-4dfc-a0ad-f1706b7cb967
+
+	measure 'TotalOrders Last Period' = ```
+			VAR TotOrdLastWeek = CALCULATE([TotalOrders], 'Calendar'[Weeks_Since] = 1)
+			VAR TotOrdLastMonth = CALCULATE([TotalOrders], 'Calendar'[Months_Since] = 1)
+			RETURN
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), TotOrdLastMonth,
+			HASONEFILTER('Calendar'[Weeks_Since]), TotOrdLastWeek)
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 849e5f25-55b4-4bf7-9545-c7679610d071
+
+	measure 'TotalOrders vs LastPeriod' = ```
+			DIVIDE(([TotalOrders]-[TotalOrders Last Period]),[TotalOrders Last Period],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Orders
+		lineageTag: 9aaabe12-d123-48ed-aac4-272b10f11ea9
+
+	measure 'DoD Orders' = ```
+			VAR Last_Period = CALCULATE([TotalOrders], FILTER(ALL('Calendar'),'Calendar'[Date] = MAX(sales[OrderDate])))
+			VAR PrevDay = CALCULATE([TotalOrders], FILTER(ALL('Calendar'),'Calendar'[Date] = (MAX(sales[OrderDate])-1)))
+			RETURN
+			Last_Period-PrevDay
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 74217215-962d-4ad9-848b-b29679655d8a
+
+	measure 'WoW Orders' = ```
+			VAR Last_Period = CALCULATE([TotalOrders], FILTER(ALL('Calendar'),'Calendar'[Weeks_Since]= 0))
+			VAR PrevDay = CALCULATE([TotalOrders], FILTER(ALL('Calendar'),'Calendar'[Weeks_Since] = 1))
+			RETURN
+			Last_Period-PrevDay
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: ab1af6a1-99f4-41ae-b5c4-cb1cbe674c94
+
+	measure 'MoM Orders' = ```
+			VAR Last_Period = TOTALMTD([TotalOrders], 'Calendar'[Date])
+			VAR PrevPeriod = CALCULATE(TOTALMTD([TotalOrders], 'Calendar'[Date]), PARALLELPERIOD('Calendar'[Date], -1, MONTH))
+			RETURN
+			Last_Period - PrevPeriod
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 204a4e75-d7f9-40b0-9dd8-3cd73e89a233
+
+	measure 'YoY Orders' = ```
+			VAR Last_Period = CALCULATE([TotalOrders], FILTER(ALL('Calendar'),'Calendar'[Year]= MAX('Calendar'[Year])))
+			VAR PrevDay = CALCULATE([TotalOrders], FILTER(ALL('Calendar'),'Calendar'[Year] = (MAX('Calendar'[Year])-1)))
+			RETURN
+			Last_Period-PrevDay
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 7cad7141-cd00-47b2-81d8-265090ead83d
+
+	measure 'MoM Fixed' = ```
+			VAR CurrentDate = MAX(sales[OrderDate])
+			VAR totalMonth = EOMONTH(MAX('Calendar'[Date]),0)
+			VAR MonthCompletion = DIVIDE(DAY(CurrentDate), day(totalMonth),0)
+			
+			VAR TotalLastMonth = EOMONTH(CurrentDate,-1)
+			VAR StartLastMonth = EOMONTH(CurrentDate,-2)+1
+			VAR ObjDay = ROUNDUP(DAY(TotalLastMonth) * MonthCompletion,0)
+			VAR ObjDate = DATE(YEAR(TotalLastMonth), MONTH(TotalLastMonth), ObjDay)
+			
+			VAR PrevMonthValue = CALCULATE([TotalOrders],DATESBETWEEN('Calendar'[Date], StartLastMonth, ObjDate), ALL('Calendar'))
+			VAR Last_Period = TOTALMTD([TotalOrders], 'Calendar'[Date])
+			RETURN
+			Last_Period - PrevMonthValue
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 090c583c-0d9f-48d3-8378-bc562eb2f11b
+
+	measure 'YoY Fixed' = ```
+			VAR CurrentDate = MAX(sales[OrderDate])
+			VAR totalYear = DATE(YEAR(CurrentDate),12,31)
+			VAR lastyear = EDATE(CurrentDate, -12)
+			var startofLastYear = DATE(YEAR(lastyear), 1, 1)
+			
+			VAR YTD_Current = TOTALYTD([TotalOrders],'Calendar'[Date], ALL('Calendar'))
+			VAR YTD_Last = CALCULATE([TotalOrders], DATESBETWEEN('Calendar'[Date], startofLastYear, lastyear))
+			RETURN
+			YTD_Current-YTD_Last
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: ab7e0dfc-80ec-43e7-906a-46a5f10bff76
+
+	measure 'Monthly Target' = ```
+			VAR Until =
+			    EOMONTH ( MAX ( sales[OrderDate] ), -1 )
+			VAR Since =
+			    EOMONTH ( MAX ( sales[OrderDate] ), -13 ) + 1
+			RETURN
+			CALCULATE(
+			    AVERAGEX(
+			        ADDCOLUMNS (
+			            SUMMARIZE ( 'Calendar', 'Calendar'[Month_Year] ),
+			            "@Orders", CALCULATE ( DISTINCTCOUNT ( sales[OrderKey] ) )
+			        ), 
+			        [@Orders]),
+			    ALLEXCEPT('Calendar', 'Calendar'[Month_Year]),
+			    DATESBETWEEN ( 'Calendar'[Date], Since, Until )
+			)
+			    
+			```
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 7b8c7fb1-8f49-4c88-81f4-9e382efa0977
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure PendingOrders = ```
+			CALCULATE([TotalOrders], sales[OrderStatus Index] < 3)
+			    
+			```
+		formatString: 0
+		displayFolder: Orders
+		lineageTag: 92616f92-baba-4f84-8006-1b245b54ac84
+
+	measure 'Orders vs target' = ```
+			VAR CurrMonth = CALCULATE([TotalOrders], 'Calendar'[Months_Since]= 0)
+			VAR CurrTarget = CALCULATE([Monthly Target], 'Calendar'[Months_Since]= 0)
+			RETURN 
+			DIVIDE(CurrMonth, CurrTarget, 0)
+			    
+			```
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		displayFolder: Orders
+		lineageTag: afd2b075-1faa-48cf-8db3-82c1d9a529b5
+
+	measure 'Avg Delivery Time' = ```
+			AVERAGE(sales[DeliveryDays])
+			    
+			```
+		displayFolder: Delivery Times
+		lineageTag: f405e781-9070-4872-97dc-da8e8b608689
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Delivery Time Last Period' = ```
+			VAR LastWeek = CALCULATE([Avg Delivery time], 'Calendar'[Weeks_Since] = 1)
+			VAR LastMonth = CALCULATE([Avg Delivery time], 'Calendar'[Months_Since] = 1)
+			RETURN
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), LastMonth,
+			HASONEFILTER('Calendar'[Weeks_Since]), LastWeek)
+			    
+			```
+		formatString: #,0.00
+		displayFolder: Delivery Times
+		lineageTag: 2fc1ebda-daf6-452b-8eee-02370fa3a856
+
+	measure 'Delivery Time vs LastPeriod' = ```
+			DIVIDE(([Avg Delivery Time]-[Delivery Time Last Period]),[Delivery Time Last Period],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Delivery Times
+		lineageTag: 39ad315c-55dc-4ceb-8577-b7d32bf82903
+
+	measure 'On Time Delivered' = ```
+			CALCULATE([TotalOrders], 
+			    FILTER(sales, sales[DeliveryDays] <= 2 && sales[OrderStatus] = "Delivered")
+			)
+			    
+			```
+		formatString: 0
+		displayFolder: Delivery Times
+		lineageTag: c5d34039-7f75-49b6-969a-16c39d6e8bfa
+
+	measure 'Compliance %' = ```
+			DIVIDE([On Time Delivered], [TotalOrders],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Delivery Times
+		lineageTag: 448bf5cd-eb26-4ba4-a076-dd4af138474d
+
+	measure 'OTD Last Period' = ```
+			VAR LastWeek = CALCULATE([On Time Delivered], 'Calendar'[Weeks_Since] = 1)
+			VAR LastMonth = CALCULATE([On Time Delivered], 'Calendar'[Months_Since] = 1)
+			RETURN
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), LastMonth,
+			HASONEFILTER('Calendar'[Weeks_Since]), LastWeek)
+			    
+			```
+		formatString: #,0
+		displayFolder: Delivery Times
+		lineageTag: de6d0417-50ee-4e14-adf2-956224fb7c76
+
+	measure 'Compliance % Last Period' = ```
+			DIVIDE([OTD Last Period], [TotalOrders Last Period],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Delivery Times
+		lineageTag: f617fdbb-f55d-498a-a111-c4a65abf72b6
+
+	measure 'Compliance vs LastPeriod' = ```
+			DIVIDE(([Compliance %]-[Compliance % Last Period]),[Compliance % Last Period],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Delivery Times
+		lineageTag: 9c2ff901-0b56-4758-b7d3-bc99ff0f5b85
+
+	measure 'Delivery Status' =
+			
+			VAR OrderID = SELECTEDVALUE(sales[OrderKey])
+			VAR Orderstatus_=
+			CALCULATE(
+			    MIN(sales[OrderStatus Index]),
+			    FILTER(
+			        sales,
+			        sales[OrderKey] = OrderID
+			    )
+			)
+			VAR DaysDifference = [Days Since Order] - Orderstatus_
+			
+			RETURN
+			
+			SWITCH(
+			    TRUE(),
+			    DaysDifference >= 3, "Critical Delay",
+			    DaysDifference >= 1, "Delay",
+			    DaysDifference <=0, "On Time")
+		displayFolder: Delivery Times
+		lineageTag: 220e694c-28b6-4af1-b83d-b2a332d7416d
+
+	measure 'Days Since Order' = ```
+			
+			DATEDIFF(MIN(sales[OrderDate]),MAX('Calendar'[Date]),DAY)
+			
+			```
+		formatString: 0
+		displayFolder: Delivery Times
+		lineageTag: 3b33345a-3a48-44d1-8598-b8e3398208a5
+
+	measure 'Days Since States' =
+			
+			AVERAGEX(
+			VALUES(Sales[OrderKey]),
+						    DATEDIFF(
+						        CALCULATE(MIN(Sales[OrderDate])),
+						        MAX('Calendar'[Date]),
+						        DAY
+						    )
+						)
+		displayFolder: Delivery Times
+		lineageTag: 3447d8e7-18e3-4a05-a186-9132e1d9c995
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Title_LastWeek_LastMonth = ```
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), "Last Month",
+			HASONEFILTER('Calendar'[Weeks_Since]), "Last Week")
+			    
+			```
+		displayFolder: 1. Texts
+		lineageTag: f5a912fa-1c40-42ad-93eb-539b523327f8
+
+	measure 'Last refreshed' = ```
+			VAR MAXDATE = MAX('Calendar'[Date])
+			RETURN
+			"Last Refreshed Date: "& MAXDATE
+			    
+			```
+		displayFolder: 1. Texts
+		lineageTag: a5c35c67-c65b-45ae-8cf5-52582f736518
+
+	measure 'Monthly Orders' = ```
+			FORMAT(
+			    CALCULATE([TotalOrders], 'Calendar'[Months_Since] = 0),
+			    "0,0") 
+			     & " Monthly Orders"
+			    
+			```
+		displayFolder: 1. Texts
+		lineageTag: c08b5b0d-67da-46b9-bee4-d33d58e8e47a
+
+	measure 'Monhtly Target Txt' = ```
+			"Monthly Target"
+			    
+			```
+		displayFolder: 1. Texts
+		lineageTag: 29501240-11d3-4103-9e3a-389413d3bd85
+
+	measure 'Monthly Orders vs Target Txt' = ```
+			"Accomplished from Target"
+			    
+			```
+		displayFolder: 1. Texts
+		lineageTag: 64403517-9649-4804-85fd-3059013eee7e
+
+	measure 'Unique Products' = ```
+			CALCULATE(
+			    DISTINCTCOUNT('product'[ProductKey]), FILTER(sales,[TotalOrders] > 0))
+			    
+			```
+		formatString: #,0
+		displayFolder: Products
+		lineageTag: 3d6ca977-41e6-411c-b3c9-2f947f5dad46
+
+	measure 'Products Last Period' =
+			
+			VAR TotOrdLastWeek = CALCULATE([Unique Products], 'Calendar'[Weeks_Since] = 1)
+			VAR TotOrdLastMonth = CALCULATE([Unique Products], 'Calendar'[Months_Since] = 1)
+			RETURN
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), TotOrdLastMonth,
+			HASONEFILTER('Calendar'[Weeks_Since]), TotOrdLastWeek)
+		formatString: #,0
+		displayFolder: Products
+		lineageTag: 46769e64-fbfc-46dc-9174-ee3d1d709ec5
+
+	measure 'UProducts vs LastPeriod' = DIVIDE(([Unique Products]-[Products Last Period]),[Products Last Period],0)
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Products
+		lineageTag: f962d502-dd59-462f-80f5-a6ea958aff03
+
+	measure 'Processing SVG' = ```
+			"data:image/svg+xml;charset=utf-8,
+			<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800' fill='none'>
+			    <path stroke='#3D7F5A' stroke-width='50' d='m606 267.978 15.45-15.448c25.593-25.595 67.093-25.595 92.687 0 25.596 25.595 25.596 67.093 0 92.687l-15.447 15.45M606 267.978s1.933 32.827 30.897 61.792c28.966 28.963 61.793 30.897 61.793 30.897M606 267.978 463.98 409.997c-9.62 9.62-14.43 14.43-18.567 19.733a109.497 109.497 0 0 0-12.473 20.187c-2.893 6.073-5.047 12.523-9.347 25.43l-13.773 41.32-4.457 13.366M698.69 360.667l-142.02 142.02c-9.62 9.62-14.43 14.43-19.733 18.566a109.502 109.502 0 0 1-20.187 12.474c-6.073 2.893-12.523 5.046-25.43 9.346L450 556.847l-13.367 4.456m-31.27-31.27-4.456 13.37a17.674 17.674 0 0 0 22.356 22.357l13.37-4.457m-31.27-31.27 31.27 31.27'/>
+			    <path stroke='#3D7F5A' stroke-linecap='round' stroke-width='50' d='M266.667 433.333H350M266.667 300h216.666M266.667 566.667h50M100 466.667V333.333c0-125.708 0-188.561 39.052-227.614 39.053-39.052 101.907-39.052 227.615-39.052h66.666c125.707 0 188.564 0 227.614 39.052M700 466.667c0 125.706 0 188.563-39.053 227.613m0 0c-39.05 39.053-101.907 39.053-227.614 39.053h-66.666c-125.708 0-188.562 0-227.615-39.053m521.895 0c31.436-31.437 37.566-78.293 38.763-160.947'/>
+			</svg>
+			"
+			    
+			```
+		displayFolder: SVGs
+		lineageTag: b11317a9-ec52-4c0b-8e61-7cfe334fbff5
+		dataCategory: ImageUrl
+
+	measure 'Ready to ship SVG' = ```
+			"data:image/svg+xml;charset=utf-8,
+			<svg width='660' height='697' viewBox='0 0 660 697' fill='none' xmlns='http://www.w3.org/2000/svg'>
+			<path fill-rule='evenodd' clip-rule='evenodd' d='M330 0L660 163.076V533.923L330 697L0 533.923V163.076L330 0ZM60 230.008V496.639L300 615.239V348.607L60 230.008ZM360 348.607V615.239L600 496.639V230.008L510 274.484V393.504L450 423.507V304.135L360 348.607ZM562.28 181.717L484.108 220.346C482.396 218.932 480.496 217.689 478.424 216.653L254.06 104.459L330 66.9318L562.28 181.717ZM186.581 137.805L417.484 253.269L330 296.502L97.7216 181.717L186.581 137.805Z' fill='#3D7F5A'/>
+			</svg>
+			"
+			    
+			```
+		displayFolder: SVGs
+		lineageTag: 88d15665-692e-432a-b9fd-788bc55a3d39
+		dataCategory: ImageUrl
+
+	measure 'SVG Selector' = ```
+			SWITCH(SELECTEDVALUE(sales[OrderStatus]),
+			"Processing", [Processing SVG],
+			"Ready to Ship", [Ready to ship SVG],
+			"In Transit", [In Transit SVG],
+			"Delivered", [Delivered SVG]
+			)
+			    
+			```
+		displayFolder: SVGs
+		lineageTag: d09c3881-4172-4fc5-9d77-09da4b8920e2
+
+	measure 'In Transit SVG' = ```
+			"data:image/svg+xml;charset=utf-8,
+			<svg width='800' height='800' viewBox='0 0 800 800' fill='none' xmlns='http://www.w3.org/2000/svg'>
+			<path fill-rule='evenodd' clip-rule='evenodd' d='M378.769 548.492C378.043 584.502 349.12 613.163 314.006 612.671C278.893 612.175 250.747 582.714 250.984 546.695C251.221 510.68 279.751 481.606 314.868 481.6C331.991 481.779 348.345 488.926 360.326 501.471C372.311 514.015 378.945 530.929 378.769 548.492Z' stroke='#3D7F5A' stroke-width='46.1538' stroke-linecap='round' stroke-linejoin='round'/>
+			<path fill-rule='evenodd' clip-rule='evenodd' d='M683.12 548.492C682.394 584.502 653.471 613.163 618.357 612.671C583.243 612.175 555.099 582.714 555.335 546.695C555.572 510.68 584.102 481.606 619.218 481.6C636.342 481.779 652.695 488.926 664.677 501.471C676.662 514.015 683.295 530.929 683.12 548.492Z' stroke='#3D7F5A' stroke-width='46.1538' stroke-linecap='round' stroke-linejoin='round'/>
+			<path d='M547.791 571.569C560.535 571.569 570.868 561.237 570.868 548.492C570.868 535.748 560.535 525.415 547.791 525.415V571.569ZM378.769 525.415C366.025 525.415 355.692 535.748 355.692 548.492C355.692 561.237 366.025 571.569 378.769 571.569V525.415ZM524.834 548.492C524.834 561.237 535.163 571.569 547.911 571.569C560.655 571.569 570.988 561.237 570.988 548.492H524.834ZM570.988 386.431C570.988 373.686 560.655 363.354 547.911 363.354C535.163 363.354 524.834 373.686 524.834 386.431H570.988ZM547.911 525.415C535.163 525.415 524.834 535.748 524.834 548.492C524.834 561.237 535.163 571.569 547.911 571.569V525.415ZM555.44 571.569C568.185 571.569 578.517 561.237 578.517 548.492C578.517 535.748 568.185 525.415 555.44 525.415V571.569ZM682.738 525.421C669.997 525.698 659.892 536.249 660.169 548.994C660.443 561.735 670.997 571.84 683.738 571.563L682.738 525.421ZM750.769 476.461L773.843 476.055C773.822 474.865 773.708 473.68 773.505 472.508L750.769 476.461ZM757.846 382.477C755.662 369.92 743.711 361.511 731.154 363.695C718.597 365.88 710.191 377.828 712.372 390.385L757.846 382.477ZM547.788 219.292C535.043 219.292 524.711 229.624 524.711 242.369C524.711 255.114 535.043 265.446 547.788 265.446V219.292ZM654.92 242.369V265.447L655.068 265.445L654.92 242.369ZM722.569 314.4L699.514 313.416C699.443 315.07 699.551 316.727 699.834 318.358L722.569 314.4ZM712.372 390.385C714.557 402.941 726.511 411.351 739.068 409.166C751.625 406.978 760.034 395.031 757.846 382.477L712.372 390.385ZM570.865 242.369C570.865 229.624 560.535 219.292 547.788 219.292C535.043 219.292 524.711 229.624 524.711 242.369H570.865ZM524.711 386.431C524.711 399.175 535.043 409.508 547.788 409.508C560.535 409.508 570.865 399.175 570.865 386.431H524.711ZM524.711 242.369C524.711 255.114 535.043 265.446 547.788 265.446C560.535 265.446 570.865 255.114 570.865 242.369H524.711ZM547.788 217.754L524.711 217.606V217.754H547.788ZM515.868 184.615L516 161.538H515.868V184.615ZM228.319 184.615V161.538L228.209 161.539L228.319 184.615ZM196.369 217.692H219.446L219.446 217.587L196.369 217.692ZM196.369 515.385L219.446 515.489V515.385H196.369ZM228.319 548.461L228.209 571.538H228.319V548.461ZM250.849 571.538C263.594 571.538 273.926 561.206 273.926 548.461C273.926 535.717 263.594 525.385 250.849 525.385V571.538ZM547.849 363.323C535.105 363.323 524.772 373.655 524.772 386.4C524.772 399.145 535.105 409.477 547.849 409.477V363.323ZM735.169 409.477C747.914 409.477 758.246 399.145 758.246 386.4C758.246 373.655 747.914 363.323 735.169 363.323V409.477ZM30.7692 223.077C18.0242 223.077 7.69232 233.409 7.69232 246.154C7.69232 258.899 18.0242 269.231 30.7692 269.231V223.077ZM124.669 269.231C137.414 269.231 147.746 258.899 147.746 246.154C147.746 233.409 137.414 223.077 124.669 223.077V269.231ZM60.7692 315.385C48.0243 315.385 37.6923 325.717 37.6923 338.461C37.6923 351.206 48.0243 361.538 60.7692 361.538V315.385ZM120.769 361.538C133.514 361.538 143.846 351.206 143.846 338.461C143.846 325.717 133.514 315.385 120.769 315.385V361.538ZM79.0692 407.692C66.3243 407.692 55.9923 418.025 55.9923 430.769C55.9923 443.514 66.3243 453.846 79.0692 453.846V407.692ZM120.769 453.846C133.514 453.846 143.846 443.514 143.846 430.769C143.846 418.025 133.514 407.692 120.769 407.692V453.846ZM547.791 525.415H378.769V571.569H547.791V525.415ZM570.988 548.492V386.431H524.834V548.492H570.988ZM547.911 571.569H555.44V525.415H547.911V571.569ZM683.738 571.563C735.003 570.452 774.742 527.203 773.843 476.055L727.695 476.868C728.169 503.705 707.505 524.883 682.738 525.421L683.738 571.563ZM773.505 472.508L757.846 382.477L712.372 390.385L728.034 480.415L773.505 472.508ZM547.788 265.446L654.92 265.447V219.292H547.788V265.446ZM655.068 265.445C666.978 265.369 678.529 270.298 686.985 279.302L720.628 247.705C703.511 229.48 679.72 219.131 654.769 219.293L655.068 265.445ZM686.985 279.302C695.462 288.328 700.058 300.652 699.514 313.416L745.625 315.384C746.692 290.378 737.723 265.908 720.628 247.705L686.985 279.302ZM699.834 318.358L712.372 390.385L757.846 382.477L745.305 310.442L699.834 318.358ZM524.711 242.369V386.431H570.865V242.369H524.711ZM570.865 242.369V217.754H524.711V242.369H570.865ZM570.865 217.901C570.96 203.226 565.369 189.003 555.145 178.39L521.905 210.409C523.655 212.228 524.726 214.807 524.711 217.606L570.865 217.901ZM555.145 178.39C544.905 167.757 530.837 161.623 516 161.538L515.738 207.692C517.942 207.705 520.172 208.61 521.905 210.409L555.145 178.39ZM515.868 161.538L228.319 161.538V207.692H515.868V161.538ZM228.209 161.539C213.384 161.609 199.317 167.722 189.067 178.334L222.263 210.4C223.997 208.605 226.228 207.702 228.43 207.692L228.209 161.539ZM189.067 178.334C178.836 188.926 173.226 203.131 173.293 217.798L219.446 217.587C219.433 214.789 220.51 212.214 222.263 210.4L189.067 178.334ZM173.292 217.692V515.385H219.446L219.446 217.692H173.292ZM173.293 515.28C173.226 529.945 178.836 544.151 189.067 554.741L222.263 522.677C220.51 520.861 219.434 518.286 219.446 515.489L173.293 515.28ZM189.067 554.741C199.317 565.354 213.384 571.468 228.209 571.538L228.43 525.385C226.228 525.375 223.996 524.471 222.263 522.677L189.067 554.741ZM228.319 571.538H250.849V525.385H228.319V571.538ZM547.849 409.477H735.169V363.323H547.849V409.477ZM30.7692 269.231H124.669V223.077H30.7692V269.231ZM60.7692 361.538H120.769V315.385H60.7692V361.538ZM79.0692 453.846H120.769V407.692H79.0692V453.846Z' fill='#3D7F5A'/>
+			</svg>
+			"
+			    
+			```
+		displayFolder: SVGs
+		lineageTag: ce930fb4-0dcb-45a7-8bf3-823549e8c0bd
+		dataCategory: ImageUrl
+
+	measure 'Delivered SVG' = ```
+			"data:image/svg+xml;charset=utf-8,
+			<svg width='600' height='600' viewBox='0 0 600 600' fill='none' xmlns='http://www.w3.org/2000/svg'>
+			<path d='M340 240L283.333 323.333L266.667 306.667C253.333 293.333 233.333 293.333 220 306.667C206.667 320 206.667 340 220 353.333L266.667 400C273.333 406.667 280 410 290 410H293.333C303.333 410 313.333 403.333 316.667 396.667L396.667 276.667C406.667 260 403.333 240 386.667 230C370 220 350 223.333 340 240Z' fill='#3D7F5A'/>
+			<path d='M300 0C133.333 0 0 133.333 0 300C0 360 20 420 53.3333 470L6.66667 550C1.43051e-06 560 1.43051e-06 573.333 6.66667 583.333C13.3333 593.333 20 600 33.3333 600H300C466.667 600 600 466.667 600 300C600 133.333 466.667 0 300 0ZM300 533.333H93.3333L123.333 483.333C130 470 130 456.667 120 446.667C86.6667 406.667 66.6667 353.333 66.6667 300C66.6667 170 170 66.6667 300 66.6667C430 66.6667 533.333 170 533.333 300C533.333 430 430 533.333 300 533.333Z' fill='#3D7F5A'/>
+			</svg>
+			"
+			    
+			```
+		displayFolder: SVGs
+		lineageTag: 2b6d1329-174c-4b62-b850-616fee0f146f
+		dataCategory: ImageUrl
+
+	measure Dot_Sales = ```
+			IF(
+			    SELECTEDVALUE(XAxis[XAxis]) = ROUND([TotalSales]/1000,0),
+			    1
+			)
+			    
+			```
+		formatString: 0
+		displayFolder: DotPlot
+		lineageTag: 87fce5b4-cc0d-4c6a-ab39-4e69b6529849
+
+	measure 'Dot_Sales last Period' = ```
+			IF(
+			    SELECTEDVALUE(XAxis[XAxis]) = ROUND([TotalSales Last Period]/1000,0),
+			    1
+			)
+			    
+			```
+		formatString: 0
+		displayFolder: DotPlot
+		lineageTag: 71c97810-cbb0-4830-82e3-e89e1183699f
+
+	measure 'Range Dot_Sales to Dot_last Period' = ```
+			VAR Min_ = MIN(ROUND([TotalSales]/1000,0), ROUND([TotalSales Last Period]/1000,0))
+			VAR Max_ = MAX(ROUND([TotalSales]/1000,0), ROUND([TotalSales Last Period]/1000,0))
+			VAR Range_ = 
+			IF(
+			    SELECTEDVALUE(XAxis[XAxis]) >= Min_
+			    && SELECTEDVALUE(XAxis[XAxis]) <= Max_,
+			    1
+			)
+			RETURN
+			Range_
+			    
+			```
+		formatString: 0
+		displayFolder: DotPlot
+		lineageTag: aecbf4b9-17d6-484a-8977-6b7246b3499e
+
+	measure 'YAxsis Item Lable placeholder' = ```
+			VAR Min_ = 
+			MINX(
+			    ALLSELECTED(store[State]),
+			    MIN(ROUND([TotalSales]/1000,0), ROUND([TotalSales Last Period]/1000,0))
+			)
+			VAR Labelplaceholder_ = 
+			IF(
+			    SELECTEDVALUE(XAxis[XAxis]) = Min_-52,
+			    1
+			)
+			RETURN
+			Labelplaceholder_
+			    
+			```
+		formatString: 0
+		displayFolder: DotPlot
+		lineageTag: d237cf49-4472-4d14-9324-85bdec63378b
+
+	measure 'YAxsis Label' = ```
+			SELECTEDVALUE(store[State])
+			    
+			```
+		displayFolder: DotPlot
+		lineageTag: 21518c9b-7856-4747-b615-ff33799e9131
+
+	measure Processing_flag = ```
+			IF(SELECTEDVALUE(sales[OrderStatus Index]) >= 0, 1, 0)
+			    
+			```
+		formatString: 0
+		displayFolder: Flags
+		lineageTag: 7fe124be-c122-418e-bb74-2be258541974
+
+	measure Ready_to_ship_flag = ```
+			IF(SELECTEDVALUE(sales[OrderStatus Index]) >= 1, 1, 0)
+			    
+			```
+		formatString: 0
+		displayFolder: Flags
+		lineageTag: a40fe4a3-bf70-489f-ac1b-339b7491962f
+
+	measure In_transit_flag = ```
+			IF(SELECTEDVALUE(sales[OrderStatus Index]) >= 2, 1, 0)
+			    
+			```
+		formatString: 0
+		displayFolder: Flags
+		lineageTag: e734729c-d62f-46dd-9d34-4644cf4c0e30
+
+	measure Ready_to_ship_flag2 = ```
+			IF(SELECTEDVALUE(sales[OrderStatus Index]) >= 1, [Ready to ship SVG], BLANK())
+			    
+			```
+		displayFolder: Flags
+		lineageTag: 3963a53d-7523-4690-8330-89f24fd19e3d
+		dataCategory: ImageUrl
+
+	measure In_transit_flag2 = ```
+			IF(SELECTEDVALUE(sales[OrderStatus Index]) >= 2, [In Transit SVG], BLANK())
+			    
+			```
+		displayFolder: Flags
+		lineageTag: 556a7abb-8e4f-446e-8e55-838c017204c7
+		dataCategory: ImageUrl
+
+	measure Test = ```
+			SELECTEDVALUE(store[State])
+			    
+			```
+		lineageTag: 95c40f7c-9825-44eb-b506-71a3750384b4
+
+	column Columna1
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 10aa007d-83dd-44d6-a978-ae8d6b74e068
+		summarizeBy: sum
+		sourceColumn: Columna1
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition *Measures = m
+		mode: import
+		source =
+				let
+				    Origen = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlCKjQUA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Columna1 = _t]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(Origen,{{"Columna1", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

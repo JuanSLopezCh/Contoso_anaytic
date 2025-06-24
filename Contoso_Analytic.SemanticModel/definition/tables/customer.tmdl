@@ -1,0 +1,129 @@
+table customer
+	lineageTag: 30a91453-2f86-40c7-8e6c-a859c2333f1b
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 03a85ed5-2010-46d7-ab87-e90c1608f15c
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gender
+		dataType: string
+		lineageTag: 3912a9be-0d92-4efc-ba16-1519c6fb2e2b
+		summarizeBy: none
+		sourceColumn: Gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		lineageTag: 69c9fe7a-4c28-4eed-b722-ac79b99dfd1f
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column StreetAddress
+		dataType: string
+		lineageTag: a916f80a-f499-4a98-9e2b-79a14e89259d
+		summarizeBy: none
+		sourceColumn: StreetAddress
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 10dd4bd9-993d-48f3-a196-ca615cb8a049
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: cd82cc26-2f27-4c7e-be0c-7aecc9228c4f
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+	column StateFull
+		dataType: string
+		lineageTag: f665424c-7b8e-42bd-9d4d-26300f54c024
+		summarizeBy: none
+		sourceColumn: StateFull
+
+		annotation SummarizationSetBy = Automatic
+
+	column ZipCode
+		dataType: int64
+		formatString: 0
+		lineageTag: af651d3d-7875-416d-8e70-e1fe56fa3e9b
+		summarizeBy: none
+		sourceColumn: ZipCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: 086b8eea-d33c-4c37-9ccc-e1dfadb09c33
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryFull
+		dataType: string
+		lineageTag: 3a614927-bf9d-4706-bc81-7bb851fc7c39
+		summarizeBy: none
+		sourceColumn: CountryFull
+
+		annotation SummarizationSetBy = Automatic
+
+	column Age
+		dataType: int64
+		formatString: 0
+		lineageTag: f780be77-a20c-46bf-b165-34e3754087cd
+		summarizeBy: none
+		sourceColumn: Age
+
+		annotation SummarizationSetBy = Automatic
+
+	column Occupation
+		dataType: string
+		lineageTag: e50e6733-27f8-4f37-8465-f403311aca82
+		summarizeBy: none
+		sourceColumn: Occupation
+
+		annotation SummarizationSetBy = Automatic
+
+	column Company
+		dataType: string
+		lineageTag: b4b7fc24-827b-446c-9223-a9d5534e1773
+		summarizeBy: none
+		sourceColumn: Company
+
+		annotation SummarizationSetBy = Automatic
+
+	partition customer = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Trabajo\Desktop\Datando\Sets de Datos\Contoso\csv-1m\customer.csv"),[Delimiter=",", Columns=24, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"CustomerKey", Int64.Type}, {"GeoAreaKey", Int64.Type}, {"StartDT", type date}, {"EndDT", type date}, {"Continent", type text}, {"Gender", type text}, {"Title", type text}, {"GivenName", type text}, {"MiddleInitial", type text}, {"Surname", type text}, {"StreetAddress", type text}, {"City", type text}, {"State", type text}, {"StateFull", type text}, {"ZipCode", Int64.Type}, {"Country", type text}, {"CountryFull", type text}, {"Birthday", type date}, {"Age", Int64.Type}, {"Occupation", type text}, {"Company", type text}, {"Vehicle", type text}, {"Latitude", type number}, {"Longitude", type number}}),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Tipo cambiado",{"EndDT", "StartDT", "Title", "MiddleInitial", "Birthday", "Vehicle", "Latitude", "Longitude", "Continent", "GeoAreaKey"}),
+				    #"Personalizada agregada" = Table.AddColumn(#"Columnas quitadas", "Name", each [GivenName]&" "&[Surname]),
+				    #"Columnas reordenadas" = Table.ReorderColumns(#"Personalizada agregada",{"CustomerKey", "Gender", "GivenName", "Surname", "Name", "StreetAddress", "City", "State", "StateFull", "ZipCode", "Country", "CountryFull", "Age", "Occupation", "Company"}),
+				    #"Columnas quitadas1" = Table.RemoveColumns(#"Columnas reordenadas",{"GivenName", "Surname"}),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Columnas quitadas1",{{"Name", type text}})
+				in
+				    #"Tipo cambiado1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

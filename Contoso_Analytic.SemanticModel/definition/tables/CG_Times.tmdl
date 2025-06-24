@@ -1,0 +1,48 @@
+table CG_Times
+	lineageTag: 8f8222b9-4eb5-4c95-8f8b-544e6128f8c0
+
+	calculationGroup
+
+		calculationItem 'Rolling Year' =
+				
+				CALCULATE(
+				    SELECTEDMEASURE(),
+				    FILTER('Calendar', MAX('Calendar'[Months_Since])  <= 12)
+				)
+
+		calculationItem 'Year to Date' =
+				
+				VAR MaxYear = CALCULATE(MAX('Calendar'[Year]), ALL('Calendar'))
+				RETURN
+				CALCULATE(
+				    SELECTEDMEASURE(),
+				    FILTER('Calendar', 'Calendar'[Year] = MaxYear)
+				)
+
+		calculationItem 'Current Month' =
+				
+				VAR MaxMonth = CALCULATE(MAX('Calendar'[Month_year_Index]), ALL('Calendar'))
+				RETURN
+				CALCULATE(
+				    SELECTEDMEASURE(),
+				    FILTER('Calendar', 'Calendar'[Month_year_Index] = MaxMonth)
+				)
+
+	column Times
+		dataType: string
+		lineageTag: 66197984-64f7-4633-a67c-b6ddaec5f937
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		formatString: 0
+		lineageTag: 13b7ddbf-5d6e-4491-8aad-50fe2113e0fe
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+

@@ -1,0 +1,117 @@
+table store
+	lineageTag: a7d8e163-e74e-4bb2-b019-c001e413af16
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: ce8151ad-94ad-4aaa-a14b-43d74a600587
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreCode
+		dataType: int64
+		formatString: 0
+		lineageTag: 812d087a-cab6-46e9-bf6c-95ec1c595ce1
+		summarizeBy: count
+		sourceColumn: StoreCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryCode
+		dataType: string
+		lineageTag: 1c7c9c9e-31f8-4990-a410-8cec60c1c337
+		summarizeBy: none
+		sourceColumn: CountryCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryName
+		dataType: string
+		lineageTag: 9e9f5a3f-5b6b-440f-9ec3-24e89c3c872b
+		summarizeBy: none
+		sourceColumn: CountryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: 1cd7e831-ebb0-4803-be8b-ce156ce93a72
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+	column OpenDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8aef74fa-05ab-4f9b-aa80-39bdf7542061
+		summarizeBy: none
+		sourceColumn: OpenDate
+
+		variation Variation
+			isDefault
+			relationship: 7c41ea20-7587-4da8-b896-3feb4ebde19b
+			defaultHierarchy: LocalDateTable_e0f283a9-71ea-4c8a-8639-066b87dd7d3e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CloseDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 94a890af-1986-40c1-a640-29d42a8fc223
+		summarizeBy: none
+		sourceColumn: CloseDate
+
+		variation Variation
+			isDefault
+			relationship: 6772a53a-a7a5-4038-bbf9-808fe9e8c15f
+			defaultHierarchy: LocalDateTable_965498a5-4a6e-47ba-94f3-821c7bd002a1.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Description
+		dataType: string
+		lineageTag: 1e323f48-abf0-4275-9168-eeada40ee683
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column SquareMeters
+		dataType: int64
+		formatString: 0
+		lineageTag: dd9cecc6-e281-44de-9a71-ccc11acb3b21
+		summarizeBy: sum
+		sourceColumn: SquareMeters
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 014d130f-70b9-4146-ad53-c108b62422b3
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition store = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Trabajo\Desktop\Datando\Sets de Datos\Contoso\csv-1m\store.csv"),[Delimiter=",", Columns=11, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"StoreKey", Int64.Type}, {"StoreCode", Int64.Type}, {"GeoAreaKey", Int64.Type}, {"CountryCode", type text}, {"CountryName", type text}, {"State", type text}, {"OpenDate", type date}, {"CloseDate", type date}, {"Description", type text}, {"SquareMeters", Int64.Type}, {"Status", type text}}),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Tipo cambiado",{"GeoAreaKey"})
+				in
+				    #"Columnas quitadas"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

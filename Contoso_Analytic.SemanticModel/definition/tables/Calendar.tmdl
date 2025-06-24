@@ -1,0 +1,159 @@
+table Calendar
+	lineageTag: ab6d2451-6f2f-45bd-9e87-3c2e94351ce2
+
+	measure Last_4_months =
+			
+			IF(
+			    MAX('Calendar'[Months_Since])  <= 4, 1, 0)
+		formatString: 0
+		lineageTag: 36cbdd33-f314-4326-9f65-d1ede5d5dbc6
+
+	measure Last_12_months =
+			
+			IF(
+			    MAX('Calendar'[Months_Since])  <= 12, 1, 0)
+		formatString: 0
+		lineageTag: 22db7525-1955-4b4b-9a5d-9d76615d47b9
+
+	column Date
+		formatString: Short Date
+		lineageTag: 921cbcd4-7b95-46ec-ac16-4d18d0e8fc91
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 6c463d03-6e5b-4859-a4a8-3d7b23041088
+			defaultHierarchy: LocalDateTable_b4b8261d-84a4-4406-adc4-76bfca5120b7.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 5f1db8ef-cd8f-49a6-836d-ff5834f48a12
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		formatString: 0
+		lineageTag: 99b12cd9-a4f1-48eb-8d9a-a5ab9f9d2ec7
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Name
+		lineageTag: ea3169ad-a837-474f-8711-d773f9197186
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month_Name]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Year
+		lineageTag: 7a137eb6-8543-4e14-8c67-38f9d338a7fd
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month_Year]
+		sortByColumn: Month_year_Index
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_year_Index
+		formatString: 0
+		lineageTag: cab81cb1-c711-415d-b738-b37b68dd12b2
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month_year_Index]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Monday_Week
+		formatString: General Date
+		lineageTag: 86832b2f-678e-445f-8ba0-c52142f26333
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Monday_Week]
+
+		variation Variation
+			isDefault
+			relationship: 0d6a0a5e-1359-4497-b8df-e33698a3801c
+			defaultHierarchy: LocalDateTable_c1f9968e-6c84-407b-bd17-41d532d5caa9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Week_Slicer =
+			
+			SWITCH(TRUE(),
+			    'Calendar'[Monday_Week] = MAX('Calendar'[Monday_Week]), "Current Week",
+			    'Calendar'[Monday_Week] = MAX('Calendar'[Monday_Week])-7 , "Last Week",
+			    BLANK()
+			)
+		lineageTag: 7a297581-fd5a-42de-aeaa-f4b99608f2e5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_slicer = ```
+			
+			VAR month_ = MONTH(MAX('Calendar'[Date]))
+			VAR year_ = YEAR(MAX('Calendar'[Date]))
+			VAR Index_ = year_*100+month_
+			RETURN
+			    IF('Calendar'[Month_year_Index] = Index_, "Current Month",BLANK())
+			
+			```
+		lineageTag: 92e9d53a-bc3e-452a-9aa7-96d3af618af1
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weeks_Since =
+			
+			VAR MAxWeek= CALCULATE(MAX([Monday_Week]),ALL('Calendar'))
+			VAR CurrWeek = 'Calendar'[Monday_Week]
+			RETURN
+			INT(DIVIDE(DATEDIFF(CurrWeek, MAxWeek, day),7))
+		formatString: 0
+		lineageTag: f601fe24-78a9-4496-a734-65ecdba1a3de
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Months_Since =
+			
+			var DateMax = CALCULATE(MAX('Calendar'[Date]), ALL('Calendar'))
+			RETURN
+			DATEDIFF('Calendar'[Date], DateMax, MONTH)
+		formatString: 0
+		lineageTag: 029a31b4-5432-4c3c-90cb-2983a97e9cda
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source = ```
+				
+				VAR MinFecha = CALCULATE(MIN(sales[OrderDate]))
+				VAR MaxFecha = MAX(sales[OrderDate])+1
+				RETURN
+				ADDCOLUMNS(
+				    CALENDAR(MinFecha, MaxFecha),
+				    "Year", YEAR([Date]),
+				    "Month", MONTH([Date]),
+				    "Month_Name", FORMAT([Date], "MMMM"),
+				    "Month_Year", FORMAT([Date], "MMM YYYY"),
+				    "Month_year_Index", YEAR([Date]) * 100 + MONTH([Date]),
+				    "Monday_Week", 
+				        [Date] - WEEKDAY([Date], 2) + 1  -- Devuelve el lunes de esa semana
+				)
+				```
+
+	annotation PBI_Id = 1e637ecc515a438f92bbdbcb93932ca7
+

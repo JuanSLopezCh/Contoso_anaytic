@@ -1,0 +1,14 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
+  "items": [
+    {
+      "name": "fda7b98e0a5861d801cc",
+      "displayName": "Summary_Times",
+      "children": [
+        "b924894310970aa39005",
+        "b13ea496c1ebb8188e16",
+        "b5cc60ef95b02ca49714"
+      ]
+    }
+  ]
+}

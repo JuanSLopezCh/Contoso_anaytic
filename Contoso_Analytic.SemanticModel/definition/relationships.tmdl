@@ -1,0 +1,50 @@
+relationship e7f9ab03-76fe-4a63-8b6b-53bbc18ac72e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: sales.DeliveryDate
+	toColumn: LocalDateTable_45a28ea0-6f40-42e4-97b4-cad3da2e326a.Date
+
+relationship 7c41ea20-7587-4da8-b896-3feb4ebde19b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: store.OpenDate
+	toColumn: LocalDateTable_e0f283a9-71ea-4c8a-8639-066b87dd7d3e.Date
+
+relationship 6772a53a-a7a5-4038-bbf9-808fe9e8c15f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: store.CloseDate
+	toColumn: LocalDateTable_965498a5-4a6e-47ba-94f3-821c7bd002a1.Date
+
+relationship AutoDetected_99d3583f-e204-425b-9db7-f58053552ad6
+	fromColumn: sales.CustomerKey
+	toColumn: customer.CustomerKey
+
+relationship AutoDetected_b5dcb273-dddd-4ea0-bc74-3eb6eb70b5e4
+	fromColumn: sales.ProductKey
+	toColumn: product.ProductKey
+
+relationship AutoDetected_e0f31771-7805-4be2-b947-56a25476c287
+	fromColumn: sales.StoreKey
+	toColumn: store.StoreKey
+
+relationship AutoDetected_20c3b7d8-cdd3-4801-bd89-58542d4c3700
+	fromColumn: store.CountryCode
+	toColumn: Countries.CountryCode
+
+relationship AutoDetected_2d96fc24-6a9f-4356-b57f-ed5908444a02
+	isActive: false
+	fromColumn: customer.Country
+	toColumn: Countries.CountryCode
+
+relationship 6c463d03-6e5b-4859-a4a8-3d7b23041088
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.Date
+	toColumn: LocalDateTable_b4b8261d-84a4-4406-adc4-76bfca5120b7.Date
+
+relationship 0d6a0a5e-1359-4497-b8df-e33698a3801c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.Monday_Week
+	toColumn: LocalDateTable_c1f9968e-6c84-407b-bd17-41d532d5caa9.Date
+
+relationship d4a6e5e7-e4f6-5668-afac-0b4ed009e8a4
+	fromColumn: sales.OrderDate
+	toColumn: Calendar.Date
+

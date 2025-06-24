@@ -1,0 +1,49 @@
+table P_times
+	lineageTag: eb90864d-585e-4cb6-b3c9-7637b71e7dbe
+
+	column P_times
+		lineageTag: 25588357-7418-4df3-86b4-2164156accbe
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'P_times Order'
+
+		relatedColumnDetails
+			groupByColumn: 'P_times Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'P_times Fields'
+		isHidden
+		lineageTag: 8d8d7c06-8507-4a50-b928-f96c704839d0
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'P_times Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'P_times Order'
+		isHidden
+		formatString: 0
+		lineageTag: 525efeca-12c5-416b-823c-84de863f4901
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition P_times = calculated
+		mode: import
+		source =
+				{
+				    ("Month_Year", NAMEOF('Calendar'[Month_Year]), 0),
+				    ("Monday_Week", NAMEOF('Calendar'[Monday_Week]), 1),
+				    ("Date", NAMEOF('Calendar'[Date]), 2)
+				}
+
+	annotation PBI_Id = 7243bcece70846ecaf86d52d60617320
+

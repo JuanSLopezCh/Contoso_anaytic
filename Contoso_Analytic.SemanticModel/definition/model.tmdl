@@ -1,0 +1,38 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: es-419
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["customer","product","sales","store","Countries","*Measures"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.144.878.0 (25.06)+9cca29236de5114792f4d7188221f91ad4a5cc50
+
+annotation PBI_ProTooling = ["DevMode","CalcGroup"]
+
+annotation __TEdtr = 1
+
+ref table customer
+ref table product
+ref table sales
+ref table DateTableTemplate_beab7c76-985f-4de0-ab41-8ca834408f80
+ref table LocalDateTable_45a28ea0-6f40-42e4-97b4-cad3da2e326a
+ref table store
+ref table LocalDateTable_e0f283a9-71ea-4c8a-8639-066b87dd7d3e
+ref table LocalDateTable_965498a5-4a6e-47ba-94f3-821c7bd002a1
+ref table Countries
+ref table *Measures
+ref table Calendar
+ref table LocalDateTable_b4b8261d-84a4-4406-adc4-76bfca5120b7
+ref table LocalDateTable_c1f9968e-6c84-407b-bd17-41d532d5caa9
+ref table Xaxis
+ref table CG_Times
+ref table P_times
+
+ref cultureInfo en-US
+

@@ -1,0 +1,193 @@
+table sales
+	lineageTag: f290ebda-01c1-4c7f-88d6-bd85fc1f2d85
+
+	column OrderKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 93c55ce5-8ca8-469a-be70-2628007b3e6b
+		summarizeBy: count
+		sourceColumn: OrderKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a8383dbd-9f06-47ee-b8f3-85c132bf5a50
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DeliveryDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bd5b8cc8-8fad-4dbf-8fb5-106810369796
+		summarizeBy: none
+		sourceColumn: DeliveryDate
+
+		variation Variation
+			isDefault
+			relationship: e7f9ab03-76fe-4a63-8b6b-53bbc18ac72e
+			defaultHierarchy: LocalDateTable_45a28ea0-6f40-42e4-97b4-cad3da2e326a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e010bb7-8545-4853-8e45-9ac6d9a3fd1f
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: d3eb0046-4f95-4a87-b63a-250a85f59c95
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: a1591916-dc03-49ed-a106-5f98e256c783
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 7d9eb9d0-7e1b-436a-9e64-7405cbf0b058
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: double
+		lineageTag: 9cf9e4eb-8168-4913-a1e1-90b657bd94fa
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NetPrice
+		dataType: double
+		lineageTag: 40e1ba74-cc9d-41c6-86a4-2d848e9861bc
+		summarizeBy: sum
+		sourceColumn: NetPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column UnitCost
+		dataType: double
+		lineageTag: 1b60aa37-bd30-4868-806d-04f430a55fcb
+		summarizeBy: sum
+		sourceColumn: UnitCost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Discount
+		dataType: double
+		lineageTag: 37903e08-4f99-41d2-968a-35047cb79ae9
+		summarizeBy: sum
+		sourceColumn: Discount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TotalPrice
+		dataType: double
+		lineageTag: 9fc601a3-6384-4b01-98ae-d3becd128215
+		summarizeBy: sum
+		sourceColumn: TotalPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TotalCost
+		dataType: double
+		lineageTag: dc9b6bf1-9c6a-4b0a-a7e5-4011a332bad5
+		summarizeBy: sum
+		sourceColumn: TotalCost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Revenue
+		dataType: double
+		lineageTag: bc4893c5-718b-4b5c-aa6f-c4a8a0c77c6b
+		summarizeBy: sum
+		sourceColumn: Revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'OrderStatus Index'
+		dataType: int64
+		formatString: 0
+		lineageTag: b909e7fc-7f5f-48f7-a517-37a69bed745f
+		summarizeBy: sum
+		sourceColumn: OrderStatus Index
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderStatus
+		dataType: string
+		lineageTag: 2f507288-98e7-4c94-9c43-74aec5c06785
+		summarizeBy: none
+		sourceColumn: OrderStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: string
+		lineageTag: c79f17ce-4698-48c2-be5e-fe53d6301f17
+		summarizeBy: none
+		sourceColumn: Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column DeliveryDays
+		dataType: int64
+		formatString: 0
+		lineageTag: 970dbb89-4bdd-40ae-9875-24a04155f635
+		summarizeBy: sum
+		sourceColumn: DeliveryDays
+
+		annotation SummarizationSetBy = Automatic
+
+	partition sales = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Trabajo\Desktop\Datando\PBIP Ventas\Datos\Modificados\sales.csv"),[Delimiter=",", Columns=18, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"OrderKey", Int64.Type}, {"OrderDate", type date}, {"DeliveryDate", type date}, {"CustomerKey", Int64.Type}, {"StoreKey", Int64.Type}, {"ProductKey", Int64.Type}, {"Quantity", Int64.Type}, {"UnitPrice", type number}, {"NetPrice", type number}, {"UnitCost", type number}, {"Discount", type number}, {"TotalPrice", type number}, {"TotalCost", type number}, {"Revenue", type number}, {"OrderStatus Index", Int64.Type}, {"OrderStatus", type text}, {"Type", type text}, {"DeliveryDays", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
