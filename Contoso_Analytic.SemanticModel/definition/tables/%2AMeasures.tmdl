@@ -59,18 +59,13 @@ table *Measures
 		displayFolder: Money
 		lineageTag: ca385dd6-12b4-4a6f-8ea9-8e46903d5206
 
-	measure 'TotalSales Last Period' = ```
-			VAR TotSlsLastWeek = CALCULATE([TotalSales], 'Calendar'[Weeks_Since] = 1)
-			VAR TotSlsLastMonth = CALCULATE([TotalSales], 'Calendar'[Months_Since] = 1)
-			RETURN
-			SWITCH(TRUE(),
-			HASONEFILTER('Calendar'[Months_Since]), TotSlsLastMonth,
-			HASONEFILTER('Calendar'[Weeks_Since]), TotSlsLastWeek)
-			    
-			```
-		formatString: \$#,0;(\$#,0);\$#,0
+	measure 'TotalSales Last Period' =
+			
+			CALCULATE([TotalSales], SAMEPERIODLASTYEAR('Calendar'[Date]))
 		displayFolder: Money
 		lineageTag: 49dd4a87-68ca-49b1-882c-f047e3a3ef58
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'TotalSales vs LastPeriod' = ```
 			DIVIDE(([TotalSales]-[TotalSales Last Period]),[TotalSales Last Period],0)
@@ -646,12 +641,12 @@ table *Measures
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure Title_LastWeek_LastMonth = ```
-			SWITCH(TRUE(),
-			HASONEFILTER('Calendar'[Months_Since]), "Last Month",
-			HASONEFILTER('Calendar'[Weeks_Since]), "Last Week")
-			    
-			```
+	measure Title_Period =
+			
+			SWITCH(
+			    SELECTEDVALUE(CG_Times[Times]),
+			    "Current Month", "Last Month",
+			    )
 		displayFolder: 1. Texts
 		lineageTag: f5a912fa-1c40-42ad-93eb-539b523327f8
 
@@ -888,6 +883,72 @@ table *Measures
 			    
 			```
 		lineageTag: 95c40f7c-9825-44eb-b506-71a3750384b4
+
+	measure 'Online Sales' =
+			
+			CALCULATE(
+			    [TotalSales],
+			    sales[Type] = "Online"
+			)
+		displayFolder: Money
+		lineageTag: 4cb9a600-d626-4fe8-b8fb-1789fad72129
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Local Sales' =
+			
+			CALCULATE(
+			    [TotalSales],
+			    sales[Type] = "Local"
+			)
+		displayFolder: Money
+		lineageTag: f5ec9883-377b-4e3f-a6bb-2cf2fefd7c80
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Online Sales Last Period' = ```
+			
+			VAR TotSlsLastWeek = CALCULATE([Online Sales], 'Calendar'[Weeks_Since] = 1)
+			VAR TotSlsLastMonth = CALCULATE([Online Sales], 'Calendar'[Months_Since] = 1)
+			RETURN
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), TotSlsLastMonth,
+			HASONEFILTER('Calendar'[Weeks_Since]), TotSlsLastWeek)
+			    
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Money
+		lineageTag: ba86175b-faff-4bf9-801f-e1deeba18a04
+
+	measure 'Local Sales Last Period' = ```
+			
+			VAR TotSlsLastWeek = CALCULATE([Local Sales], 'Calendar'[Weeks_Since] = 1)
+			VAR TotSlsLastMonth = CALCULATE([Local Sales], 'Calendar'[Months_Since] = 1)
+			RETURN
+			SWITCH(TRUE(),
+			HASONEFILTER('Calendar'[Months_Since]), TotSlsLastMonth,
+			HASONEFILTER('Calendar'[Weeks_Since]), TotSlsLastWeek)
+			    
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Money
+		lineageTag: 48ab1acd-513f-449a-ab33-ca02fe10963a
+
+	measure 'Online Sales vs LastPeriod' = ```
+			DIVIDE(([Online Sales]-[Online Sales Last Period]),[Online Sales Last Period],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Money
+		lineageTag: 9e9bc4cb-a00c-49a0-9c49-09b61160cc52
+
+	measure 'Local Sales vs LastPeriod' = ```
+			DIVIDE(([Local Sales]-[Local Sales Last Period]),[Local Sales Last Period],0)
+			    
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		displayFolder: Money
+		lineageTag: 94d15250-a76c-46f2-9e37-747fb1e3a1ba
 
 	column Columna1
 		dataType: int64

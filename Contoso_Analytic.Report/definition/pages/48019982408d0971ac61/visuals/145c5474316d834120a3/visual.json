@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "145c5474316d834120a3",
   "position": {
-    "x": 83.387622149837142,
-    "y": 100.06514657980456,
+    "x": 65.820895522388057,
+    "y": 702.53731343283584,
     "z": 1000,
-    "height": 362.73615635179152,
-    "width": 266.84039087947883,
-    "tabOrder": 1
+    "height": 364.02985074626866,
+    "width": 267.31343283582089,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "tableEx",
@@ -48,37 +48,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "8ada5893b330901bd39c",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Calendar"
-              }
-            },
-            "Property": "Month_Year"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "bff0ea07030669e7ad3c",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "*Measures"
-              }
-            },
-            "Property": "TotalSales"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

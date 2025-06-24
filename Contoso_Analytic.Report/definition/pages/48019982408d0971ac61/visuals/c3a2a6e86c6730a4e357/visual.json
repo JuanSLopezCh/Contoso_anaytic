@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "c3a2a6e86c6730a4e357",
   "position": {
-    "x": 558.22937625754525,
-    "y": 61.810865191146881,
+    "x": 1534.0298507462687,
+    "y": 263.28358208955223,
     "z": 2000,
-    "height": 363.13883299798795,
-    "width": 386.31790744466804,
-    "tabOrder": 3
+    "height": 362.68656716417911,
+    "width": 385.52238805970148,
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "tableEx",
@@ -79,51 +79,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "59cbd5800756c4dc67b0",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Calendar"
-              }
-            },
-            "Property": "Date"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "06bf37307aa8dcdd7986",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "*Measures"
-              }
-            },
-            "Property": "Profit"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "0762f68680198559b048",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Calendar"
-              }
-            },
-            "Property": "Month_year_Index"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

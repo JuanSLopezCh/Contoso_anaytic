@@ -7,7 +7,10 @@ table CG_Times
 				
 				CALCULATE(
 				    SELECTEDMEASURE(),
-				    FILTER('Calendar', MAX('Calendar'[Months_Since])  <= 12)
+				    FILTER(
+				        'Calendar',
+				        'Calendar'[Months_Since] <= 11
+				    )
 				)
 
 		calculationItem 'Year to Date' =

@@ -7,7 +7,7 @@
     "z": 1000,
     "height": 125.705378020265,
     "width": 149.64925954793452,
-    "tabOrder": 4
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "slicer",
@@ -135,23 +135,5 @@
     },
     "drillFilterOtherVisuals": true
   },
-  "parentGroupName": "5762f999d7ca27259086",
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "b4756510b0b901071203",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "P_times"
-              }
-            },
-            "Property": "P_times"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
-  }
+  "parentGroupName": "5762f999d7ca27259086"
 }

@@ -7,7 +7,7 @@
     "z": 0,
     "height": 125.705378020265,
     "width": 185.56508183943882,
-    "tabOrder": 2
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "slicer",
@@ -98,23 +98,5 @@
     },
     "drillFilterOtherVisuals": true
   },
-  "parentGroupName": "5762f999d7ca27259086",
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "acd3d223160e569ad4ad",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "CG_Times"
-              }
-            },
-            "Property": "Times"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
-  }
+  "parentGroupName": "5762f999d7ca27259086"
 }
