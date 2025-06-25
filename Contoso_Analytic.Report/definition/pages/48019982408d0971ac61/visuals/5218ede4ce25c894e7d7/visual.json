@@ -81,7 +81,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Year to Date'"
+                                "Value": "'Rolling Year'"
                               }
                             }
                           ]

@@ -641,15 +641,6 @@ table *Measures
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure Title_Period =
-			
-			SWITCH(
-			    SELECTEDVALUE(CG_Times[Times]),
-			    "Current Month", "Last Month",
-			    )
-		displayFolder: 1. Texts
-		lineageTag: f5a912fa-1c40-42ad-93eb-539b523327f8
-
 	measure 'Last refreshed' = ```
 			VAR MAXDATE = MAX('Calendar'[Date])
 			RETURN
@@ -906,30 +897,16 @@ table *Measures
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Online Sales Last Period' = ```
+	measure 'Online Sales Last Period' =
 			
-			VAR TotSlsLastWeek = CALCULATE([Online Sales], 'Calendar'[Weeks_Since] = 1)
-			VAR TotSlsLastMonth = CALCULATE([Online Sales], 'Calendar'[Months_Since] = 1)
-			RETURN
-			SWITCH(TRUE(),
-			HASONEFILTER('Calendar'[Months_Since]), TotSlsLastMonth,
-			HASONEFILTER('Calendar'[Weeks_Since]), TotSlsLastWeek)
-			    
-			```
+			CALCULATE([Online Sales], SAMEPERIODLASTYEAR('Calendar'[Date]))
 		formatString: \$#,0;(\$#,0);\$#,0
 		displayFolder: Money
 		lineageTag: ba86175b-faff-4bf9-801f-e1deeba18a04
 
-	measure 'Local Sales Last Period' = ```
+	measure 'Local Sales Last Period' =
 			
-			VAR TotSlsLastWeek = CALCULATE([Local Sales], 'Calendar'[Weeks_Since] = 1)
-			VAR TotSlsLastMonth = CALCULATE([Local Sales], 'Calendar'[Months_Since] = 1)
-			RETURN
-			SWITCH(TRUE(),
-			HASONEFILTER('Calendar'[Months_Since]), TotSlsLastMonth,
-			HASONEFILTER('Calendar'[Weeks_Since]), TotSlsLastWeek)
-			    
-			```
+			CALCULATE([Local Sales], SAMEPERIODLASTYEAR('Calendar'[Date]))
 		formatString: \$#,0;(\$#,0);\$#,0
 		displayFolder: Money
 		lineageTag: 48ab1acd-513f-449a-ab33-ca02fe10963a

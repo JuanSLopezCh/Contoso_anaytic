@@ -16,46 +16,6 @@
     "sections": {
       "48019982408d0971ac61": {
         "visualContainers": {
-          "145c5474316d834120a3": {
-            "filters": {
-              "byExpr": [
-                {
-                  "name": "8ada5893b330901bd39c",
-                  "type": "Categorical",
-                  "expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Calendar"
-                        }
-                      },
-                      "Property": "Month_Year"
-                    }
-                  },
-                  "howCreated": 0
-                },
-                {
-                  "name": "bff0ea07030669e7ad3c",
-                  "type": "Advanced",
-                  "expression": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "*Measures"
-                        }
-                      },
-                      "Property": "TotalSales"
-                    }
-                  },
-                  "howCreated": 0
-                }
-              ]
-            },
-            "singleVisual": {
-              "visualType": "tableEx",
-              "objects": {}
-            }
-          },
           "26bd5e7c01290a76d677": {
             "filters": {
               "byExpr": [
@@ -296,76 +256,6 @@
                   }
                 ]
               }
-            }
-          },
-          "c3a2a6e86c6730a4e357": {
-            "filters": {
-              "byExpr": [
-                {
-                  "name": "59cbd5800756c4dc67b0",
-                  "type": "Categorical",
-                  "expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Calendar"
-                        }
-                      },
-                      "Property": "Date"
-                    }
-                  },
-                  "howCreated": 0
-                },
-                {
-                  "name": "06bf37307aa8dcdd7986",
-                  "type": "Advanced",
-                  "expression": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "*Measures"
-                        }
-                      },
-                      "Property": "Profit"
-                    }
-                  },
-                  "howCreated": 0
-                },
-                {
-                  "name": "0762f68680198559b048",
-                  "type": "Advanced",
-                  "expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Calendar"
-                        }
-                      },
-                      "Property": "Month_year_Index"
-                    }
-                  },
-                  "howCreated": 0
-                }
-              ]
-            },
-            "singleVisual": {
-              "visualType": "tableEx",
-              "objects": {},
-              "orderBy": [
-                {
-                  "Direction": 2,
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Calendar"
-                        }
-                      },
-                      "Property": "Month_year_Index"
-                    }
-                  }
-                }
-              ]
             }
           },
           "3092f252d2a36c475b56": {

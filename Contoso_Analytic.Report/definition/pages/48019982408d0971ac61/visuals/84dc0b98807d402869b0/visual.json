@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "84dc0b98807d402869b0",
   "position": {
-    "x": 106,
-    "y": 60,
+    "x": 292.32432432432438,
+    "y": 224.8648648648647,
     "z": 4000,
-    "height": 162,
-    "width": 310,
+    "height": 138.37837837837839,
+    "width": 309.62162162162161,
     "tabOrder": 4000
   },
   "visual": {
@@ -115,6 +115,20 @@
           },
           "selector": {
             "metadata": "*Measures.TotalSales"
+          }
+        },
+        {
+          "properties": {
+            "horizontalAlignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
           }
         }
       ],
@@ -288,6 +302,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'rows'"
+                }
+              }
+            },
+            "horizontalAlignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
                 }
               }
             }
